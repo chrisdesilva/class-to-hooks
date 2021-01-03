@@ -1,36 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import LaunchList from "./LaunchList";
 
-class App extends React.Component {
-  state = {
-    loading: false,
-    launches: [],
-  };
+const App = () => {
+  const [loading, setLoading] = useState(false);
+  const [launches, setLaunches] = useState([]);
 
-  componentDidMount() {
-    this.setState({ loading: true });
-    fetch(" https://api.spacexdata.com/v3/launches")
+  useEffect(() => {
+    setLoading(true);
+    fetch("https://api.spacexdata.com/v3/launches")
       .then((res) => res.json())
-      .then((data) =>
-        this.setState({
-          launches: data,
-          loading: false,
-        })
-      );
-  }
+      .then((data) => {
+        setLaunches(data);
+        setLoading(false);
+      });
+  }, []);
 
-  render() {
-    return (
-      <div>
-        {this.state.loading ? (
-          <p>Loading...</p>
-        ) : (
-          <LaunchList launches={this.state.launches} />
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      {loading ? <p>Loading...</p> : <LaunchList launches={launches} />}
+    </div>
+  );
+};
 
 export default App;
